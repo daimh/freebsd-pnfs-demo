@@ -73,9 +73,9 @@ var/pnfs.iso : lfs/FreeBSD-13.1-RELEASE-amd64-disc1.iso var/installerconfig
 	cp var/installerconfig $@.d/etc
 	echo 'autoboot_delay="0"' >> $@.d/boot/loader.conf
 	dd if=$< bs=1 count=446 of=$@.mbr_code.img
-	xorriso -indev $< -report_el_torito plain -report_system_area plain &> $@.info
-	dd if=$< bs=2048 skip=1044 count=3076 of=$@.bios_boot.img
-	dd if=$< bs=2048 skip=20 count=1024 of=$@.efi_part.img
+	xorriso -indev $< -report_el_torito plain -report_system_area plain > $<.info
+	dd if=$< bs=2048 skip=$$(grep '^El Torito boot img :   1  BIOS' $<.info | tr -s " " | cut -d " " -f 13) count=$$(grep '^El Torito img blks :   1' $<.info | tr -s " " | cut -d " " -f 7) of=$@.bios_boot.img
+	dd if=$< bs=2048 skip=$$(grep '^El Torito boot img :   2  UEFI' $<.info | tr -s " " | cut -d " " -f 13) count=$$(grep '^El Torito img blks :   2' $<.info | tr -s " " | cut -d " " -f 7) of=$@.efi_part.img
 	xorriso \
 		-system_id $(Git) \
 		-as mkisofs \

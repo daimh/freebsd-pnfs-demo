@@ -2,7 +2,7 @@
 
 ## About
 
-The minimal pNFS demo on FreeBSD with four virtual nodes, mds, ds0, ds1, and client. 
+An unattended pNFS demo on four virtualized FreeBSD nodes, mds, ds0, ds1, and client. It took 4m56.369s if the FreeBSD ISO file was downloaded.
 
 ## Run
 ```
