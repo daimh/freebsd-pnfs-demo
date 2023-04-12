@@ -15,7 +15,7 @@ endef
 var/client : var/build var/mds
 	$(call DaikerRun,2218)
 	$(Ssh) -p 2218 root@localhost <<< '\
-		sed -i.bak -e s/freebsd-image/mds/ /etc/rc.conf && \
+		sed -i.bak -e s/freebsd-image/client/ /etc/rc.conf && \
 		( echo ifconfig_vtnet1=\"inet 192.168.10.8 netmask 255.255.255.0\" && \
 			echo nfsuserd_enable=\"YES\" && \
 			echo nfscbd_enable=\"YES\" \
@@ -65,7 +65,7 @@ var/build : var/pnfs.iso lfs/daiker
 	rm -f $@.qcow2
 	lfs/daiker build -H 10 -i $< $@.qcow2
 	touch $@
-var/pnfs.iso : lfs/FreeBSD-13.1-RELEASE-amd64-disc1.iso var/installerconfig
+var/pnfs.iso : lfs/FreeBSD-13.2-RELEASE-amd64-disc1.iso var/installerconfig
 	#Credit to https://unix.stackexchange.com/questions/487895/how-to-create-a-freebsd-iso-with-mkisofs-that-will-boot-in-virtualbox-under-uefi 
 	rm -rf $@.d
 	mkdir -p $@.d
@@ -94,10 +94,11 @@ lfs/daiker :
 	wget -cO $@.tmp https://raw.githubusercontent.com/daimh/daiker/master/daiker
 	chmod +x $@.tmp
 	mv $@.tmp $@
-lfs/FreeBSD-13.1-RELEASE-amd64-disc1.iso :
+lfs/FreeBSD-13.2-RELEASE-amd64-disc1.iso :
 	mkdir -p $(@D)
-	wget -cO $@.xz https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.1/FreeBSD-13.1-RELEASE-amd64-disc1.iso.xz
+	wget -cO $@.xz https://download.freebsd.org/ftp/releases/ISO-IMAGES/13.2/FreeBSD-13.2-RELEASE-amd64-disc1.iso.xz
 	unxz $@.xz
+	touch $@
 var/installerconfig : lib/installerconfig.m4 var/id_ed25519
 	m4 -D PUBKEY="$$(cat var/id_ed25519.pub)" $< > $@
 var/id_ed25519 :
